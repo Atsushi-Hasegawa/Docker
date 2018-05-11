@@ -1,0 +1,29 @@
+version: '3'
+services:
+    dbm:
+        image: mysql:5.5
+        ports:
+            - "13306:3306"
+        restart: always
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./master.cnf:/etc/my.cnf
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            TZ: "Asia/Tokyo"
+
+    dbs:
+        image: mysql:5.5
+        ports:
+            - "23306:3306"
+        restart: always
+        volumes:
+            - ./slave.cnf:/etc/mysq.cnf
+        tmpfs: /var/lib/mysql
+        depends_on:
+            - dbm
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            TZ: "Asia/Tokyo"
+volumes:
+    mysql-data:
